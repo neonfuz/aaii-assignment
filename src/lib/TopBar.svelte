@@ -64,6 +64,7 @@
     </nav>
     {#if hoverMenu && breakpoint === 'lg'}
         <div class="hoverContent">
+            <div class="container">
             <heading>{hoverMenu}</heading>
             {#if hoverMenu === 'About'}
                 <ul>
@@ -71,6 +72,7 @@
                     <li><a href="">Another link</a></li>
                 </ul>
             {/if}
+            </div>
         </div>
     {/if}
 </div>
@@ -79,13 +81,18 @@
 {/if}
 
 <style lang="scss">
+ .container {
+     width: 1100px;
+     margin-left: auto;
+     margin-right: auto;
+     display: flex;
+ }
  .TopBar-pre {
      background: #204c72;
      padding: 1rem;
      display: flex;
      justify-content: center;
      .container {
-         width: 1050px;
          display: flex;
          align-items: center;
          justify-content: space-between;
@@ -127,14 +134,21 @@
  }
  .TopBar:hover .hoverContent {
      display: flex;
+     padding: 1em;
      heading {
          font-size: 1.3rem;
          font-weight: bold;
          padding-bottom: .5em;
      }
+     .container {
+         flex-direction: column;
+         ul {
+             padding-left: 1em;
+         }
+     }
  }
  @media (min-width: 1150px) {
-     .TopBar {
+     .TopBar nav {
          justify-content: center;
          & > * {
              padding: 1em .6em;
