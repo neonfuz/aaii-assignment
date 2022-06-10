@@ -189,11 +189,16 @@
      position: relative;
  }
  @media (max-width: 1149px) {
-     thead {
-         border-bottom: solid #ccc 1px;
+     thead tr:first-child {
+         border-top: solid #ccc 1px;
      }
      tr:nth-child(even) {
          border-bottom: solid #ccc 1px;
+     }
+ }
+ @media (max-width: 500px) {
+     table {
+         font-size: 3.2vw;
      }
  }
  .icon {
