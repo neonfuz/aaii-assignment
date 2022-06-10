@@ -1,5 +1,6 @@
 <script>
  import {onMount} from 'svelte';
+ import {Circle} from 'svelte-loading-spinners';
  import {getStocks} from '$lib/api.js';
  import {formatMoney, filterNull} from '$lib/format.js';
  import {getBreakpoint} from '$lib/breakpoints.js';
@@ -121,49 +122,59 @@
 
 <svelte:window bind:outerWidth="{width}" />
 
-<table>
-    <thead>
-        {#each columnRows as cr}
-            <tr>
-                {#each cr as column}
-                    <th name="{column.name}"
-                        on:click="{onClickHeader}"
-                        {...getBreakpointProps(column)}>
-                        {column.label}
-                        <span class="icon">
-                            {#if column.name === lastSortColumn}
-                                {#if !sortReverse}
-                                    <IconSortDown />
-                                {:else}
-                                    <IconSortUp />
-                                {/if}
-                            {:else}
-                                <IconSort />
-                            {/if}
-                        </span>
-                    </th>
-                {/each}
-            </tr>
-        {/each}
-    </thead>
-    <tbody>
-        {#each stocks as stock}
+{#if stocks.length === 0}
+    <div class="spinner">
+        <Circle color="#10283d" />
+    </div>
+{:else}
+    <table>
+        <thead>
             {#each columnRows as cr}
-                <tr on:mouseover="{() => rowHover(stock.ticker)}"
-                    on:mouseleave="{() => rowUnHover(stock.ticker)}"
-                    class:active="{stock.ticker === activeTicker}">
+                <tr>
                     {#each cr as column}
-                        <td {...getBreakpointProps(column)}>
-                            {column.format ? column.format(stock[column.name]) : stock[column.name]}
-                        </td>
+                        <th name="{column.name}"
+                            on:click="{onClickHeader}"
+                            {...getBreakpointProps(column)}>
+                            {column.label}
+                            <span class="icon">
+                                {#if column.name === lastSortColumn}
+                                    {#if !sortReverse}
+                                        <IconSortDown />
+                                    {:else}
+                                        <IconSortUp />
+                                    {/if}
+                                {:else}
+                                    <IconSort />
+                                {/if}
+                            </span>
+                        </th>
                     {/each}
                 </tr>
             {/each}
-        {/each}
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            {#each stocks as stock}
+                {#each columnRows as cr}
+                    <tr on:mouseover="{() => rowHover(stock.ticker)}"
+                        on:mouseleave="{() => rowUnHover(stock.ticker)}"
+                        class:active="{stock.ticker === activeTicker}">
+                        {#each cr as column}
+                            <td {...getBreakpointProps(column)}>
+                                {column.format ? column.format(stock[column.name]) : stock[column.name]}
+                            </td>
+                        {/each}
+                    </tr>
+                {/each}
+            {/each}
+        </tbody>
+    </table>
+{/if}
 
 <style>
+ .spinner {
+     display: flex;
+     justify-content: center;
+ }
  table {
      max-width: 1800px;
      margin-left: auto;

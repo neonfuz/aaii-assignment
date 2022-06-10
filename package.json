@@ -22,6 +22,7 @@
 	"type": "module",
 	"dependencies": {
 		"node-sass": "^7.0.1",
-		"svelte-icons": "^2.1.0"
+		"svelte-icons": "^2.1.0",
+		"svelte-loading-spinners": "^0.1.7"
 	}
 }
