@@ -82,7 +82,7 @@
          return 0;
      };
  }
- function sortBy(column) {
+ function sortByColumn(column) {
      const sort = columnSort(column);
      if (lastSortColumn === column && !sortReverse) {
          stocks = stocks.sort((a, b) => -1 * sort(a, b));
@@ -94,9 +94,9 @@
      lastSortColumn = column;
  }
  function onClickHeader(event) {
-     sortBy(event.target.getAttribute('name'));
+     sortByColumn(event.target.getAttribute('name'));
  }
- let width;
+ let width = 0;
  $: breakpoint = getBreakpoint(width);
  $: columnRows = breakpoint !== 'lg' ? [
      columns.slice(0, 4),
@@ -105,18 +105,17 @@
      columns
  ];
  function getBreakpointProps(column) {
-     if (column.breakpoints)
-         return column.breakpoints[breakpoint];
-     else
-         return {};
+     return column.breakpoints
+          ? column.breakpoints[breakpoint]
+          : {};
  }
- let activeTicker = '';
+ let activeRowTicker = '';
  function rowHover(ticker) {
-     activeTicker = ticker;
+     activeRowTicker = ticker;
  }
  function rowUnHover(ticker) {
-     if (activeTicker === ticker)
-         activeTicker = '';
+     if (activeRowTicker === ticker)
+         activeRowTicker = '';
  }
 </script>
 
@@ -157,7 +156,7 @@
                 {#each columnRows as cr}
                     <tr on:mouseover="{() => rowHover(stock.ticker)}"
                         on:mouseleave="{() => rowUnHover(stock.ticker)}"
-                        class:active="{stock.ticker === activeTicker}">
+                        class:active="{stock.ticker === activeRowTicker}">
                         {#each cr as column}
                             <td {...getBreakpointProps(column)}>
                                 {column.format ? column.format(stock[column.name]) : stock[column.name]}
