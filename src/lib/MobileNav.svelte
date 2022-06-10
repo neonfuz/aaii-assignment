@@ -16,8 +16,6 @@
  .backdrop {
      position: fixed;
      inset: 0;
-     width: 100vw;
-     height: 100%;
      background: #0003;
      z-index: 9;
  }
