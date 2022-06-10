@@ -1,3 +1,11 @@
+# AAII Coding Assignment
+
+This is the code for an interview with AAII. There is a live version hosted on netlify
+[here](https://sparkling-nasturtium-820d07.netlify.app).
+
+Below is the original readme from
+SvelteKit. 
+
 # create-svelte
 
 Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/master/packages/create-svelte).
