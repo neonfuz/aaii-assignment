@@ -1,6 +1,7 @@
 <script>
  import {onMount} from 'svelte';
  import {getStocks} from '$lib/api.js';
+ import {formatMoney, filterNull} from '$lib/format.js';
  import IconSort from 'svelte-icons/fa/FaSort.svelte';
  import IconSortUp from 'svelte-icons/fa/FaSortUp.svelte';
  import IconSortDown from 'svelte-icons/fa/FaSortDown.svelte';
@@ -9,32 +10,70 @@
      stocks = await getStocks();
  });
  const columns = [
-     { name: "ticker", label: "Ticker" },
-     { name: "company", label: "Company" },
-     { name: "sector", label: "Sector" },
-     { name: "industry", label: "Industry" },
-     { name: "price", label: "Price" },
-     { name: "volumeAvg", label: "Volume-Avg\nDaily (K)" },
-     { name: "mktcap", label: "Market Cap\n(Mil)" },
-     { name: "dividend", label: "Dividend" },
-     { name: "exchange", label: "Exchange" },
-     { name: "adr", label: "ADR" }
+     {
+         name: "ticker",
+         label: "Ticker"
+     },
+     {
+         name: "company",
+         label: "Company"
+     },
+     {
+         name: "sector",
+         label: "Sector"
+     },
+     {
+         name: "industry",
+         label: "Industry"
+     },
+     {
+         name: "price",
+         label: "Price",
+         format: formatMoney(2)
+     },
+     {
+         name: "volumeAvg",
+         label: "Volume-Avg\nDaily (K)",
+         format: filterNull
+     },
+     {
+         name: "mktcap",
+         label: "Market Cap\n(Mil)",
+         format: formatMoney(1)
+     },
+     {
+         name: "dividend",
+         label: "Dividend",
+         format: formatMoney(3)
+     },
+     {
+         name: "exchange",
+         label: "Exchange"
+     },
+     {
+         name: "adr",
+         label: "ADR"
+     }
  ];
- let lastSort = '';
+ let lastSortColumn = '';
  let sortReverse = false;
+ function columnSort(column) {
+     return (a, b) => {
+         if (a[column] < b[column]) return -1;
+         if (a[column] > b[column]) return 1;
+         return 0;
+     };
+ }
  function sortBy(column) {
-     if (lastSort === column) {
-         stocks = stocks.reverse();
-         sortReverse = !sortReverse;
+     const sort = columnSort(column);
+     if (lastSortColumn === column && !sortReverse) {
+         stocks = stocks.sort((a, b) => -1 * sort(a, b));
+         sortReverse = true;
      } else {
-         stocks = stocks.sort((a, b) => {
-             if (a[column] < b[column]) return -1;
-             if (a[column] > b[column]) return 1;
-             return 0;
-         });
+         stocks = stocks.sort(sort);
          sortReverse = false;
      }
-     lastSort = column;
+     lastSortColumn = column;
  }
  function onClickHeader(event) {
      sortBy(event.target.getAttribute('name'));
@@ -48,7 +87,7 @@
                 <th name="{column.name}" on:click="{onClickHeader}">
                     {column.label}
                     <span class="icon">
-                        {#if column.name === lastSort}
+                        {#if column.name === lastSortColumn}
                             {#if !sortReverse}
                                 <IconSortDown />
                             {:else}
@@ -66,7 +105,7 @@
         {#each stocks as stock}
             <tr>
                 {#each columns as column}
-                    <td>{stock[column.name]}</td>
+                    <td>{column.format ? column.format(stock[column.name]) : stock[column.name]}</td>
                 {/each}
             </tr>
         {/each}
