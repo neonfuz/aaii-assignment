@@ -30,6 +30,17 @@
 
 <svelte:window bind:outerWidth="{width}" />
 
+{#if breakpoint === 'lg'}
+    <div class="TopBar-pre">
+        <div class="container">
+            <img alt="AAII"
+                 src="{AAIILogo}"
+                 height="90px"
+            />
+            <button class="join-button">Join Today for Just $2</button>
+        </div>
+    </div>
+{/if}
 <nav class="TopBar">
     {#if breakpoint === 'lg'}
         {#each items as item}
@@ -54,6 +65,29 @@
 {/if}
 
 <style lang="scss">
+ .TopBar-pre {
+     background: #204c72;
+     padding: 1rem;
+     display: flex;
+     justify-content: center;
+     .container {
+         width: 1050px;
+         display: flex;
+         align-items: center;
+         justify-content: space-between;
+
+     }
+
+     .join-button {
+         background: #ff9100;
+         color: white;
+         border: none;
+         border-radius: 1em;
+         padding: 1rem;
+         font-weight: bold;
+         font-size: 1.5rem;
+     }
+ }
  .TopBar {
      position: sticky;
      top: 0;
@@ -62,7 +96,6 @@
      background: #10283d;
      display: flex;
      justify-content: space-between;
-     align-items: center;
      font-weight: bold;
      & > * {
          color: white;
