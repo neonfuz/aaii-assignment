@@ -16,7 +16,11 @@
      },
      {
          name: "company",
-         label: "Company"
+         label: "Company",
+         breakpoints: {
+             sm: { colspan: 2 },
+             md: { colspan: 2 }
+         }
      },
      {
          name: "sector",
@@ -24,7 +28,11 @@
      },
      {
          name: "industry",
-         label: "Industry"
+         label: "Industry",
+         breakpoints: {
+             sm: { style: 'display:none' },
+             md: { colspan: 2 }
+         }
      },
      {
          name: "price",
@@ -33,12 +41,12 @@
      },
      {
          name: "volumeAvg",
-         label: "Volume-Avg\nDaily (K)",
+         label: "Volume-Avg Daily (K)",
          format: filterNull
      },
      {
          name: "mktcap",
-         label: "Market Cap\n(Mil)",
+         label: "Market Cap (Mil)",
          format: formatMoney(1)
      },
      {
@@ -48,11 +56,19 @@
      },
      {
          name: "exchange",
-         label: "Exchange"
+         label: "Exchange",
+         breakpoints: {
+             sm: { style: 'display:none' },
+             md: {}
+         }
      },
      {
          name: "adr",
-         label: "ADR"
+         label: "ADR",
+         breakpoints: {
+             sm: { style: 'display:none' },
+             md: {}
+         }
      }
  ];
  let lastSortColumn = '';
@@ -78,36 +94,70 @@
  function onClickHeader(event) {
      sortBy(event.target.getAttribute('name'));
  }
+ let width;
+ $: breakpoint = width < 600 ? 'sm' : (width < 1150) ? 'md' : 'lg';
+ $: columnRows = breakpoint !== 'lg' ? [
+     columns.slice(0, 4),
+     columns.slice(4),
+ ] : [
+     columns
+ ];
+ function getBreakpointProps(column) {
+     if (column.breakpoints)
+         return column.breakpoints[breakpoint];
+     else
+         return {};
+ }
+ let activeTicker = '';
+ function rowHover(ticker) {
+     activeTicker = ticker;
+ }
+ function rowUnHover(ticker) {
+     if (activeTicker === ticker)
+         activeTicker = '';
+ }
 </script>
+
+<svelte:window bind:outerWidth="{width}" />
 
 <table>
     <thead>
-        <tr>
-            {#each columns as column}
-                <th name="{column.name}" on:click="{onClickHeader}">
-                    {column.label}
-                    <span class="icon">
-                        {#if column.name === lastSortColumn}
-                            {#if !sortReverse}
-                                <IconSortDown />
+        {#each columnRows as cr}
+            <tr>
+                {#each cr as column}
+                    <th name="{column.name}"
+                        on:click="{onClickHeader}"
+                        {...getBreakpointProps(column)}>
+                        {column.label}
+                        <span class="icon">
+                            {#if column.name === lastSortColumn}
+                                {#if !sortReverse}
+                                    <IconSortDown />
+                                {:else}
+                                    <IconSortUp />
+                                {/if}
                             {:else}
-                                <IconSortUp />
+                                <IconSort />
                             {/if}
-                        {:else}
-                            <IconSort />
-                        {/if}
-                    </span>
-                </th>
-            {/each}
-        </tr>
+                        </span>
+                    </th>
+                {/each}
+            </tr>
+        {/each}
     </thead>
     <tbody>
         {#each stocks as stock}
-            <tr>
-                {#each columns as column}
-                    <td>{column.format ? column.format(stock[column.name]) : stock[column.name]}</td>
-                {/each}
-            </tr>
+            {#each columnRows as cr}
+                <tr on:mouseover="{() => rowHover(stock.ticker)}"
+                    on:mouseleave="{() => rowUnHover(stock.ticker)}"
+                    class:active="{stock.ticker === activeTicker}">
+                    {#each cr as column}
+                        <td {...getBreakpointProps(column)}>
+                            {column.format ? column.format(stock[column.name]) : stock[column.name]}
+                        </td>
+                    {/each}
+                </tr>
+            {/each}
         {/each}
     </tbody>
 </table>
@@ -118,10 +168,17 @@
      overflow-y: auto;
  }
  table, th, td {
-     border: solid #f0f0f0 1px;
+     border-left: solid #eee 1px;
+     border-right: solid #eee 1px;
      border-collapse: collapse;
      padding: 1em;
      text-align: left;
+ }
+ tr {
+     border-bottom: solid #ddd 1px;
+ }
+ tr.active {
+     background: #f4f4f4;
  }
  th {
      background: #fafafa;
@@ -129,6 +186,14 @@
      text-decoration: underline;
      cursor: pointer;
      position: relative;
+ }
+ @media (max-width: 1149px) {
+     thead {
+         border-bottom: solid #ccc 1px;
+     }
+     tr:nth-child(even) {
+         border-bottom: solid #ccc 1px;
+     }
  }
  .icon {
      height: 1em;
