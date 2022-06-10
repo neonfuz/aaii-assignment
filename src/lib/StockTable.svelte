@@ -182,7 +182,7 @@
      background: #f4f4f4;
  }
  th {
-     background: #fafafa;
+     background: #eee;
      font-weight: normal;
      text-decoration: underline;
      cursor: pointer;
