@@ -180,14 +180,9 @@
      margin-right: auto;
  }
  table, th, td {
-     border-left: solid #eee 1px;
-     border-right: solid #eee 1px;
      border-collapse: collapse;
      padding: .5em;
      text-align: left;
- }
- tr {
-     border-bottom: solid #ddd 1px;
  }
  tr.active {
      background: #f4f4f4;
@@ -199,12 +194,12 @@
      cursor: pointer;
      position: relative;
  }
+ tr {
+     border-bottom: solid #eee 1px;
+ }
  @media (max-width: 1149px) {
-     thead tr:first-child {
-         border-top: solid #ccc 1px;
-     }
-     tr:nth-child(even) {
-         border-bottom: solid #ccc 1px;
+     tr:nth-child(odd) {
+         border-bottom: none;
      }
  }
  @media (max-width: 500px) {
