@@ -172,7 +172,7 @@
      border-left: solid #eee 1px;
      border-right: solid #eee 1px;
      border-collapse: collapse;
-     padding: 1em;
+     padding: .5em;
      text-align: left;
  }
  tr {
