@@ -165,8 +165,9 @@
 
 <style>
  table {
-     max-height: 80vh;
-     overflow-y: auto;
+     max-width: 1800px;
+     margin-left: auto;
+     margin-right: auto;
  }
  table, th, td {
      border-left: solid #eee 1px;
