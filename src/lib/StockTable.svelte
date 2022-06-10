@@ -5,32 +5,17 @@
  onMount(async () => {
      stocks = await getStocks();
  });
- const columnNames = {
-     "id": "id",
-     "companyId": "companyId",
-     "siproId": "siproId",
-     "ticker": "Ticker",
-     "company": "Company",
-     "sector": "Sector",
-     "industry": "Industry",
-     "price": "Price",
-     "volumeAvg": "Volume-Avg\nDaily (K)",
-     "mktcap": "Market Cap\n(Mil)",
-     "dividend": "Dividend",
-     "exchange": "Exchange",
-     "adr": "ADR"
- };
  const columns = [
-     "ticker",
-     "company",
-     "sector",
-     "industry",
-     "price",
-     "volumeAvg",
-     "mktcap",
-     "dividend",
-     "exchange",
-     "adr"
+     { name: "ticker", label: "Ticker" },
+     { name: "company", label: "Company" },
+     { name: "sector", label: "Sector" },
+     { name: "industry", label: "Industry" },
+     { name: "price", label: "Price" },
+     { name: "volumeAvg", label: "Volume-Avg\nDaily (K)" },
+     { name: "mktcap", label: "Market Cap\n(Mil)" },
+     { name: "dividend", label: "Dividend" },
+     { name: "exchange", label: "Exchange" },
+     { name: "adr", label: "ADR" }
  ];
  function sortBy(column) {
      stocks = stocks.sort((a, b) => {
@@ -49,8 +34,8 @@
     <thead>
         <tr>
             {#each columns as column}
-                <th name="{column}" on:click="{onClickHeader}">
-                    {columnNames[column]}
+                <th name="{column.name}" on:click="{onClickHeader}">
+                    {column.label}
                 </th>
             {/each}
         </tr>
@@ -59,7 +44,7 @@
         {#each stocks as stock}
             <tr>
                 {#each columns as column}
-                    <td>{stock[column]}</td>
+                    <td>{stock[column.name]}</td>
                 {/each}
             </tr>
         {/each}
