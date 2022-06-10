@@ -2,6 +2,7 @@
  import {onMount} from 'svelte';
  import {getStocks} from '$lib/api.js';
  import {formatMoney, filterNull} from '$lib/format.js';
+ import {getBreakpoint} from '$lib/breakpoints.js';
  import IconSort from 'svelte-icons/fa/FaSort.svelte';
  import IconSortUp from 'svelte-icons/fa/FaSortUp.svelte';
  import IconSortDown from 'svelte-icons/fa/FaSortDown.svelte';
@@ -95,7 +96,7 @@
      sortBy(event.target.getAttribute('name'));
  }
  let width;
- $: breakpoint = width < 600 ? 'sm' : (width < 1150) ? 'md' : 'lg';
+ $: breakpoint = getBreakpoint(width);
  $: columnRows = breakpoint !== 'lg' ? [
      columns.slice(0, 4),
      columns.slice(4),

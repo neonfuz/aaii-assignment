@@ -1,4 +1,6 @@
 <script>
+ import {getBreakpoint} from '$lib/breakpoints.js';
+ import MobileNav from '$lib/MobileNav.svelte';
  import IconBars from 'svelte-icons/fa/FaBars.svelte';
  import IconSearch from 'svelte-icons/fa/FaSearch.svelte';
  import AAIILogo from './AAII_Logo.svg';
@@ -15,14 +17,27 @@
      "Education",
      "A+ Investor",
  ];
- let width;
+ let width = 0;
+ $: breakpoint = getBreakpoint(width);
+ let isMobileMenuOpen = false;
+ function openMobileMenu() {
+     isMobileMenuOpen = true;
+ }
+ function closeMobileMenu() {
+     isMobileMenuOpen = false;
+ }
 </script>
 
-<svelte:window bind:innerWidth="{width}" />
+<svelte:window bind:outerWidth="{width}" />
 
 <nav class="TopBar">
-    {#if width < 1150}
-        <a class="icon">
+    {#if breakpoint === 'lg'}
+        {#each items as item}
+            <a href="">{item}</a>
+        {/each}
+    {:else}
+        <a class="icon"
+           on:click="{openMobileMenu}">
             <IconBars />
         </a>
         <img alt="AAII"
@@ -32,15 +47,17 @@
         <a class="icon">
             <IconSearch />
         </a>
-    {:else}
-    {#each items as item}
-        <a href="">{item}</a>
-    {/each}
     {/if}
 </nav>
+{#if breakpoint !== 'lg' && isMobileMenuOpen}
+    <MobileNav {items} close="{closeMobileMenu}" />
+{/if}
 
 <style lang="scss">
  .TopBar {
+     position: sticky;
+     top: 0;
+     z-index: 5;
      color: white;
      background: #10283d;
      display: flex;
@@ -51,6 +68,7 @@
          color: white;
          text-decoration: none;
          padding: 1em;
+         cursor: pointer;
      }
  }
  @media (min-width: 1150px) {
