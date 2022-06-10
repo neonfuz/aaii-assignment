@@ -26,6 +26,7 @@
  function closeMobileMenu() {
      isMobileMenuOpen = false;
  }
+ let hoverMenu = 'hello';
 </script>
 
 <svelte:window bind:outerWidth="{width}" />
@@ -41,25 +42,38 @@
         </div>
     </div>
 {/if}
-<nav class="TopBar">
-    {#if breakpoint === 'lg'}
-        {#each items as item}
-            <a href="">{item}</a>
-        {/each}
-    {:else}
-        <a class="icon"
-           on:click="{openMobileMenu}">
-            <IconBars />
-        </a>
-        <img alt="AAII"
-             src="{AAIILogo}"
-             height="33px"
-        />
-        <a class="icon">
-            <IconSearch />
-        </a>
+<div class="TopBar">
+    <nav>
+        {#if breakpoint === 'lg'}
+            {#each items as item}
+                <a href="" on:mouseenter="{() => hoverMenu = item}">{item}</a>
+            {/each}
+        {:else}
+            <a class="icon"
+               on:click="{openMobileMenu}">
+                <IconBars />
+            </a>
+            <img alt="AAII"
+                 src="{AAIILogo}"
+                 height="33px"
+            />
+            <a class="icon">
+                <IconSearch />
+            </a>
+        {/if}
+    </nav>
+    {#if hoverMenu && breakpoint === 'lg'}
+        <div class="hoverContent">
+            <heading>{hoverMenu}</heading>
+            {#if hoverMenu === 'About'}
+                <ul>
+                    <li><a href="">Example link</a></li>
+                    <li><a href="">Another link</a></li>
+                </ul>
+            {/if}
+        </div>
     {/if}
-</nav>
+</div>
 {#if breakpoint !== 'lg' && isMobileMenuOpen}
     <MobileNav {items} close="{closeMobileMenu}" />
 {/if}
@@ -75,9 +89,7 @@
          display: flex;
          align-items: center;
          justify-content: space-between;
-
      }
-
      .join-button {
          background: #ff9100;
          color: white;
@@ -88,7 +100,7 @@
          font-size: 1.5rem;
      }
  }
- .TopBar {
+ .TopBar nav {
      position: sticky;
      top: 0;
      z-index: 5;
@@ -102,6 +114,23 @@
          text-decoration: none;
          padding: 1em;
          cursor: pointer;
+     }
+ }
+ .TopBar .hoverContent {
+     display: none;
+     background: white;
+     position: absolute;
+     z-index: 5;
+     width: 100%;
+     box-shadow: 0 0 20px #3338;
+     flex-direction: column
+ }
+ .TopBar:hover .hoverContent {
+     display: flex;
+     heading {
+         font-size: 1.3rem;
+         font-weight: bold;
+         padding-bottom: .5em;
      }
  }
  @media (min-width: 1150px) {
