@@ -1,5 +1,5 @@
 <script>
- import StockTable from '$lib/StockTable.svelte';
+ import StockTable from '$lib/StockTable';
 </script>
 
 <section>

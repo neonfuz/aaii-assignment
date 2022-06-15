@@ -1,9 +1,11 @@
 <script>
  import {onMount} from 'svelte';
+ import {writable} from 'svelte/store';
  import {Circle} from 'svelte-loading-spinners';
  import {getStocks} from '$lib/api.js';
  import {formatMoney, filterNull} from '$lib/format.js';
  import {getBreakpoint} from '$lib/breakpoints.js';
+ import hover from './hover.js';
  import IconSort from 'svelte-icons/fa/FaSort.svelte';
  import IconSortUp from 'svelte-icons/fa/FaSortUp.svelte';
  import IconSortDown from 'svelte-icons/fa/FaSortDown.svelte';
@@ -109,14 +111,7 @@
           ? column.breakpoints[breakpoint]
           : {};
  }
- let activeRowTicker = '';
- function rowHover(ticker) {
-     activeRowTicker = ticker;
- }
- function rowUnHover(ticker) {
-     if (activeRowTicker === ticker)
-         activeRowTicker = '';
- }
+ const activeTicker = writable('');
 </script>
 
 <svelte:window bind:outerWidth="{width}" />
@@ -154,9 +149,8 @@
         <tbody>
             {#each stocks as stock}
                 {#each columnRows as cr}
-                    <tr on:mouseover="{() => rowHover(stock.ticker)}"
-                        on:mouseleave="{() => rowUnHover(stock.ticker)}"
-                        class:active="{stock.ticker === activeRowTicker}">
+                    <tr use:hover="{[stock.ticker, activeTicker]}"
+                        class:active="{stock.ticker === $activeTicker}">
                         {#each cr as column}
                             <td {...getBreakpointProps(column)}>
                                 {column.format ? column.format(stock[column.name]) : stock[column.name]}
